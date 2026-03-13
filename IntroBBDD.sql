@@ -46,6 +46,35 @@ FROM airports_data
 GROUP BY city
 HAVING COUNT(airport_name) > 1
 
+-- 7. Mostrar el número de vuelos por modelo de avión.--
 
+SELECT 
+    a.model, 
+    COUNT(f.flight_id) AS total_vuelos
+FROM flights f
+JOIN aircrafts_data a ON f.aircraft_code = a.aircraft_code
+GROUP BY a.model
+ORDER BY total_vuelos DESC
 
+-- 8. Reservas con más de un billete (varios pasajeros).-- Igual que el de las ciudades
 
+SELECT 
+    book_ref 
+    COUNT(ticket_no) AS total_billetes
+FROM tickets
+GROUP BY book_ref
+HAVING COUNT(ticket_no) > 1
+ORDER BY total_billetes DESC
+
+-- 9. Vuelos con retraso de salida superior a una hora.-- (este no se por que me costo bastante , bueno las subconsultas son engorrosas)
+
+SELECT * FROM (
+    SELECT 
+        flight_id,
+        flight_no,
+        scheduled_departure,
+        actual_departure,
+        (actual_departure - scheduled_departure) AS tiempo_retraso
+    FROM flights
+) 
+WHERE tiempo_retraso > '01:00:00'
